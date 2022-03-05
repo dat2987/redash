@@ -4,9 +4,10 @@ curl -O https://raw.githubusercontent.com/dat2987/redash/main/setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
 ```
-3. Create a folder named `nginx` in `/opt/redash`.
-4. Create in the nginx folder two additional folders: `certs` and `certs-data`.
-5. Create the file `/opt/redash/nginx/nginx.conf` and place the following in it: (replace `example.redashapp.com` with your domain name)
+SET UP HTTPS FOR REDASH
+1. Create a folder named `nginx` in `/opt/redash`.
+2. Create in the nginx folder two additional folders: `certs` and `certs-data`.
+3. Create the file `/opt/redash/nginx/nginx.conf`
    ```
    upstream redash {
        server redash:5000;
@@ -15,7 +16,7 @@ sudo ./setup.sh
    server {
        listen      80;
        listen [::]:80;
-       server_name example.redashapp.com;
+       server_name dash.survey.re;
 
        location ^~ /ping {
            proxy_set_header Host $http_host;
@@ -62,7 +63,7 @@ sudo ./setup.sh
       deliverous/certbot \
       certonly \
       --webroot --webroot-path=/data/letsencrypt \
-      -d example.redashapp.com
+      -d dash.survey.re
    ```
 7. Assuming the previous step was succesful, update the nginx config to include the SSL configuration:
    ```
@@ -73,7 +74,7 @@ sudo ./setup.sh
    server {
        listen      80;
        listen [::]:80;
-       server_name example.redashapp.com;
+       server_name dash.survey.re;
 
        location ^~ /ping {
            proxy_set_header Host $http_host;
@@ -97,7 +98,7 @@ sudo ./setup.sh
    server {
     listen      443           ssl http2;
     listen [::]:443           ssl http2;
-    server_name               example.redashapp.com;
+    server_name               dash.survey.re;
 
     add_header                Strict-Transport-Security "max-age=31536000" always;
 
@@ -112,9 +113,9 @@ sudo ./setup.sh
     ssl_stapling_verify       on;
     resolver                  8.8.8.8 8.8.4.4;
 
-    ssl_certificate           /etc/letsencrypt/live/example.redashapp.com/fullchain.pem;
-    ssl_certificate_key       /etc/letsencrypt/live/example.redashapp.com/privkey.pem;
-    ssl_trusted_certificate   /etc/letsencrypt/live/example.redashapp.com/chain.pem;
+    ssl_certificate           /etc/letsencrypt/live/dash.survey.re/fullchain.pem;
+    ssl_certificate_key       /etc/letsencrypt/live/dash.survey.re/privkey.pem;
+    ssl_trusted_certificate   /etc/letsencrypt/live/dash.survey.re/chain.pem;
 
     access_log                /dev/stdout;
     error_log                 /dev/stderr info;
@@ -132,7 +133,7 @@ sudo ./setup.sh
    }    
     ```
 8. Restart nginx: `docker-compose restart nginx`.
-9. All done, your Redash instance should be available via HTTPS now. 👏
+9. All done, your Redash instance should be available via HTTPS now.
 
 To renew the certificate in the future, you can use the following command:
 
